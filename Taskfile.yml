@@ -14,9 +14,21 @@ tasks:
 
   ci:
     cmds:
+      - task: 'clean'
+      - task: 'build'
       - task: 'lint'
       - task: 'test'
     desc: 'Run all CI-related tasks'
+
+  clean:
+    cmds:
+      - 'rm -fr pathshorten'
+    desc: 'Delete all buildable files'
+
+  build:
+    cmds:
+      - 'go build ./cmd/pathshorten'
+    desc: 'Build the "pathshorten" application'
 
   lint:
     cmds:
