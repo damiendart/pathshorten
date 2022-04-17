@@ -2,9 +2,9 @@ package pathshorten
 
 import "testing"
 
-// The following tests are based on Vim's "pathshorten" tests:
-// <https://github.com/vim/vim/blob/master/src/testdir/test_functions.vim#L510>.
 func TestPathShorten(t *testing.T) {
+	// The following tests are based on Vim's "pathshorten" tests:
+	// <https://github.com/vim/vim/blob/master/src/testdir/test_functions.vim#L510>.
 	basicTests := [][]string{
 		{"", ""},
 		{".", "."},

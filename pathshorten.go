@@ -1,3 +1,5 @@
+// Package pathshorten provides an implementation of Vim's "pathshorten"
+// function, which shortens directory names in a file path.
 package pathshorten
 
 import (
