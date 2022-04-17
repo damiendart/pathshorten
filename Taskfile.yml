@@ -15,6 +15,7 @@ tasks:
   ci:
     cmds:
       - task: 'lint'
+      - task: 'test'
     desc: 'Run all CI-related tasks'
 
   lint:
@@ -38,3 +39,8 @@ tasks:
     cmds:
       - 'go vet {{catLines .GO_PACKAGES}}'
     desc: 'Lint Go files with Vet'
+
+  test:
+    cmds:
+      - 'go test {{catLines .GO_PACKAGES}}'
+    desc: 'Run all tests'
