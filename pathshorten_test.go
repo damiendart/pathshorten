@@ -26,7 +26,67 @@ func TestPathShorten(t *testing.T) {
 	}
 
 	for _, test := range basicTests {
-		if output := PathShorten(test[0]); output != test[1] {
+		if output := PathShorten(test[0], 1); output != test[1] {
+			t.Errorf(
+				"Input %#v: expected %#v, got %#v",
+				test[0],
+				test[1],
+				output,
+			)
+		}
+	}
+}
+
+func TestShortenToken(t *testing.T) {
+	basicTests := [][]string{
+		{"", ""},
+		{".", "."},
+		{"..", ".."},
+		{"~", "~"},
+		{"~~", "~~"},
+		{"a", "a"},
+		{"ab", "a"},
+		{"foo", "f"},
+		{"foobar", "f"},
+		{".a", ".a"},
+		{"~a", "~a"},
+		{".~a", ".~a"},
+		{"~.a", "~.a"},
+		{"~.foo", "~.f"},
+		{"~~.foo", "~~.f"},
+	}
+
+	for _, test := range basicTests {
+		if output := shortenToken(test[0], 1); output != test[1] {
+			t.Errorf(
+				"Input %#v: expected %#v, got %#v",
+				test[0],
+				test[1],
+				output,
+			)
+		}
+	}
+
+	trimmingTests := [][]string{
+		{"", ""},
+		{".", "."},
+		{"..", ".."},
+		{"~", "~"},
+		{"~~", "~~"},
+		{"a", "a"},
+		{"ab", "ab"},
+		{"foo", "fo"},
+		{"foobar", "fo"},
+		{".a", ".a"},
+		{"~a", "~a"},
+		{".~a", ".~a"},
+		{"~.a", "~.a"},
+		{"~.foo", "~.fo"},
+		{"~~.foo", "~~.fo"},
+	}
+
+	for _, test := range trimmingTests {
+		if output := shortenToken(test[0], 2); output != test[1] {
 			t.Errorf(
 				"Input %#v: expected %#v, got %#v",
 				test[0],
