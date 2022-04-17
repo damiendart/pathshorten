@@ -23,6 +23,7 @@ func shortenToken(input string, length uint) string {
 	return input
 }
 
+// PathShorten shortens directory names in a file path.
 func PathShorten(input string, tokenLength uint) string {
 	separator := string(os.PathSeparator)
 	tokens := strings.Split(input, separator)

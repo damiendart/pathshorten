@@ -1,0 +1,40 @@
+---
+version: '3'
+
+output: 'prefixed'
+
+vars:
+  GO_PACKAGES:
+    sh: 'go list ./...'
+
+tasks:
+  default:
+    deps:
+      - task: 'ci'
+
+  ci:
+    cmds:
+      - task: 'lint'
+    desc: 'Run all CI-related tasks'
+
+  lint:
+    cmds:
+      - task: 'lint:golint'
+      - task: 'lint:staticcheck'
+      - task: 'lint:vet'
+    desc: 'Run all linting-related tasks'
+
+  lint:golint:
+    cmds:
+      - 'golint -set_exit_status {{catLines .GO_PACKAGES}}'
+    desc: 'Lint Go files with Golint'
+
+  lint:staticcheck:
+    cmds:
+      - 'staticcheck {{catLines .GO_PACKAGES}}'
+    desc: 'Lint Go files with Staticcheck'
+
+  lint:vet:
+    cmds:
+      - 'go vet {{catLines .GO_PACKAGES}}'
+    desc: 'Lint Go files with Vet'
