@@ -37,7 +37,7 @@ func TestPathShorten(t *testing.T) {
 	}
 }
 
-func TestShortenToken(t *testing.T) {
+func TestShortenPathComponent(t *testing.T) {
 	basicTests := [][]string{
 		{"", ""},
 		{".", "."},
@@ -57,7 +57,7 @@ func TestShortenToken(t *testing.T) {
 	}
 
 	for _, test := range basicTests {
-		if output := shortenToken(test[0], 1); output != test[1] {
+		if output := shortenPathComponent(test[0], 1); output != test[1] {
 			t.Errorf(
 				"Input %#v: expected %#v, got %#v",
 				test[0],
@@ -86,7 +86,7 @@ func TestShortenToken(t *testing.T) {
 	}
 
 	for _, test := range trimmingTests {
-		if output := shortenToken(test[0], 2); output != test[1] {
+		if output := shortenPathComponent(test[0], 2); output != test[1] {
 			t.Errorf(
 				"Input %#v: expected %#v, got %#v",
 				test[0],
