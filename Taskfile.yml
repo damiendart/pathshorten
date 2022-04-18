@@ -15,9 +15,9 @@ tasks:
   ci:
     cmds:
       - task: 'clean'
-      - task: 'build'
       - task: 'lint'
       - task: 'test'
+      - task: 'build'
     desc: 'Run all CI-related tasks'
 
   clean:
