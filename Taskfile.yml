@@ -27,7 +27,7 @@ tasks:
 
   build:
     cmds:
-      - 'go build ./cmd/pathshorten'
+      - 'go build .'
     desc: 'Build the "pathshorten" application'
 
   lint:

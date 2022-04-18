@@ -3,9 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/damiendart/pathshorten"
 	"log"
 	"os"
+
+	"github.com/damiendart/pathshorten/pkg/pathshorten"
 )
 
 func printOutput(output string, newline bool) {
