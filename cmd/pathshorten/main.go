@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/damiendart/pathshorten"
 	"log"
 	"os"
-	"www.robotinaponcho.net/git/pathshorten"
 )
 
 func printOutput(output string, newline bool) {
