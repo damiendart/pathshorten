@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/damiendart/pathshorten/pkg/pathshorten"
+	"github.com/damiendart/pathshorten"
 )
 
 func printOutput(output string, newline bool) {
