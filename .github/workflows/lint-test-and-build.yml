@@ -3,7 +3,7 @@
 # please refer to the accompanying "LICENCE" file.
 
 ---
-name: 'Lint Project'
+name: 'Lint, Test, and Build Project'
 
 on:
   push:
@@ -11,8 +11,8 @@ on:
       - 'master'
 
 jobs:
-  lint:
-    name: 'Lint and test project'
+  lint-test-and-build:
+    name: 'Lint, test, and build project'
     runs-on: 'ubuntu-20.04'
     steps:
       - name: 'Check out repository'
@@ -31,5 +31,5 @@ jobs:
           go install golang.org/x/lint/golint@latest
           go install honnef.co/go/tools/cmd/staticcheck@latest
 
-      - name: 'Ensure all linting and testing tasks run successfully'
+      - name: 'Ensure all linting, testing, and building tasks run successfully'
         run: './bin/task ci'
