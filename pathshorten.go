@@ -3,7 +3,6 @@
 package pathshorten
 
 import (
-	"os"
 	"strings"
 )
 
@@ -26,9 +25,12 @@ func shortenPathComponent(input string, length uint) string {
 }
 
 // PathShorten shortens directory names in a file path.
-func PathShorten(input string, pathComponentLength uint) string {
-	separator := string(os.PathSeparator)
-	tokens := strings.Split(input, separator)
+func PathShorten(
+	input string,
+	pathSeparator string,
+	pathComponentLength uint,
+) string {
+	tokens := strings.Split(input, pathSeparator)
 
 	for i := 0; i < len(tokens); i++ {
 		if i != len(tokens)-1 {
@@ -36,5 +38,5 @@ func PathShorten(input string, pathComponentLength uint) string {
 		}
 	}
 
-	return strings.Join(tokens, separator)
+	return strings.Join(tokens, pathSeparator)
 }

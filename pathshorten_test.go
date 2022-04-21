@@ -2,7 +2,14 @@ package pathshorten
 
 import "testing"
 
-type TestCase struct {
+type PathShortenTestCase struct {
+	input               string
+	pathSeparator       string
+	pathComponentLength uint
+	expected            string
+}
+
+type ShortenPathComponentTestCase struct {
 	input               string
 	pathComponentLength uint
 	expected            string
@@ -11,29 +18,35 @@ type TestCase struct {
 func TestPathShorten(t *testing.T) {
 	// The following tests are based on Vim's "pathshorten" tests:
 	// <https://github.com/vim/vim/blob/master/src/testdir/test_functions.vim#L510>.
-	testCases := []TestCase{
-		{"", 1, ""},
-		{".", 1, "."},
-		{"..", 1, ".."},
-		{"~", 1, "~"},
-		{"~~", 1, "~~"},
-		{"foo", 1, "foo"},
-		{"/foo", 1, "/foo"},
-		{"foo/", 1, "f/"},
-		{"foo/bar", 1, "f/bar"},
-		{"foo/bar/foobar", 1, "f/b/foobar"},
-		{".foo/bar", 1, ".f/bar"},
-		{"~foo/bar", 1, "~f/bar"},
-		{"~.foo/bar", 1, "~.f/bar"},
-		{".~foo/bar", 1, ".~f/bar"},
-		{"~/foo/bar", 1, "~/f/bar"},
-		{"~/föo/bar", 1, "~/f/bar"},
-		{"~/àéïöü/bar", 1, "~/à/bar"},
-		{"~/../bar", 1, "~/../bar"},
+	testCases := []PathShortenTestCase{
+		{"", "/", 1, ""},
+		{".", "/", 1, "."},
+		{"..", "/", 1, ".."},
+		{"~", "/", 1, "~"},
+		{"~~", "/", 1, "~~"},
+		{"foo", "/", 1, "foo"},
+		{"/foo", "/", 1, "/foo"},
+		{"foo/", "/", 1, "f/"},
+		{"foo/bar", "/", 1, "f/bar"},
+		{"foo/bar/foobar", "/", 1, "f/b/foobar"},
+		{".foo/bar", "/", 1, ".f/bar"},
+		{"~foo/bar", "/", 1, "~f/bar"},
+		{"~.foo/bar", "/", 1, "~.f/bar"},
+		{".~foo/bar", "/", 1, ".~f/bar"},
+		{"~/foo/bar", "/", 1, "~/f/bar"},
+		{"~/föo/bar", "/", 1, "~/f/bar"},
+		{"~/àéïöü/bar", "/", 1, "~/à/bar"},
+		{"~/../bar", "/", 1, "~/../bar"},
+		{"foo:bar", ":", 1, "f:bar"},
+		{`C:\foo\bar`, `\`, 1, `C\f\bar`},
 	}
 
 	for _, testCase := range testCases {
-		output := PathShorten(testCase.input, testCase.pathComponentLength)
+		output := PathShorten(
+			testCase.input,
+			testCase.pathSeparator,
+			testCase.pathComponentLength,
+		)
 
 		if output != testCase.expected {
 			t.Errorf(
@@ -47,7 +60,7 @@ func TestPathShorten(t *testing.T) {
 }
 
 func TestShortenPathComponent(t *testing.T) {
-	testCases := []TestCase{
+	testCases := []ShortenPathComponentTestCase{
 		{"", 1, ""},
 		{"", 2, ""},
 		{".", 1, "."},

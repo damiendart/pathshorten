@@ -23,6 +23,11 @@ func main() {
 		1,
 		"The number of alphanumeric characters of each directory to display",
 	)
+	pathSeparator := flag.String(
+		"separator",
+		string(os.PathSeparator),
+		"The path separator",
+	)
 	suppressTrailingNewline := flag.Bool(
 		"n",
 		false,
@@ -33,7 +38,11 @@ func main() {
 
 	if len(flag.Args()) > 0 {
 		printOutput(
-			pathshorten.PathShorten(flag.Args()[0], *pathComponentLength),
+			pathshorten.PathShorten(
+				flag.Args()[0],
+				*pathSeparator,
+				*pathComponentLength,
+			),
 			!*suppressTrailingNewline,
 		)
 	} else {
@@ -45,6 +54,7 @@ func main() {
 		printOutput(
 			pathshorten.PathShorten(
 				currentWorkingDirectory,
+				*pathSeparator,
 				*pathComponentLength,
 			),
 			!*suppressTrailingNewline,
