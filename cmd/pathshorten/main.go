@@ -8,12 +8,12 @@ It is inspired by Vim's "pathshorten" function.
 
 Usage:
 
-	pathshorten [flags] [path]
+	pathshorten [flags] [paths]
 
 Arguments:
 
-	path string
-		The file path to shorten. The path does not have to exist. If
+	paths
+		File paths to shorten. The path does not have to exist. If
 		not provided, the current working directory is used.
 
 Optional flags:
@@ -35,12 +35,13 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/damiendart/pathshorten"
 )
 
 func main() {
-	var path string
+	var paths []string
 
 	pathComponentLength := flag.Uint(
 		"length",
@@ -61,25 +62,27 @@ func main() {
 	flag.Parse()
 
 	if len(flag.Args()) > 0 {
-		path = flag.Args()[0]
+		paths = append(paths, flag.Args()...)
 	} else {
 		currentWorkingDirectory, err := os.Getwd()
 		if err != nil {
 			log.Fatalln(err)
 		}
 
-		path = currentWorkingDirectory
+		paths = append(paths, currentWorkingDirectory)
 	}
 
-	output := pathshorten.PathShorten(
-		path,
-		*pathSeparator,
-		*pathComponentLength,
-	)
+	for i, path := range paths {
+		paths[i] = pathshorten.PathShorten(
+			path,
+			*pathSeparator,
+			*pathComponentLength,
+		)
+	}
 
 	if *suppressTrailingNewline {
-		fmt.Print(output)
+		fmt.Print(strings.Join(paths, "\n"))
 	} else {
-		fmt.Println(output)
+		fmt.Println(strings.Join(paths, "\n"))
 	}
 }
