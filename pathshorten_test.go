@@ -4,25 +4,22 @@
 
 package pathshorten
 
-import "testing"
-
-type PathShortenTestCase struct {
-	input               string
-	pathSeparator       string
-	pathComponentLength uint
-	expected            string
-}
-
-type ShortenPathComponentTestCase struct {
-	input               string
-	pathComponentLength uint
-	expected            string
-}
+import (
+	"fmt"
+	"testing"
+)
 
 func TestPathShorten(t *testing.T) {
+	t.Parallel()
+
 	// The following tests are based on Vim's "pathshorten" tests:
-	// <https://github.com/vim/vim/blob/master/src/testdir/test_functions.vim#L510>.
-	testCases := []PathShortenTestCase{
+	// <https://github.com/vim/vim/blob/master/src/testdir/test_functions.vim#L520>.
+	testCases := []struct {
+		input               string
+		pathSeparator       string
+		pathComponentLength uint
+		expected            string
+	}{
 		{"", "/", 1, ""},
 		{".", "/", 1, "."},
 		{"..", "/", 1, ".."},
@@ -45,26 +42,37 @@ func TestPathShorten(t *testing.T) {
 		{`C:\foo\bar`, `\`, 1, `C\f\bar`},
 	}
 
-	for _, testCase := range testCases {
-		output := PathShorten(
-			testCase.input,
-			testCase.pathSeparator,
-			testCase.pathComponentLength,
-		)
+	for _, tt := range testCases {
+		t.Run(
+			fmt.Sprintf("shortens %q correctly", tt.input),
+			func(t *testing.T) {
+				t.Parallel()
 
-		if output != testCase.expected {
-			t.Errorf(
-				"Input %#v: expected %#v, got %#v",
-				testCase.input,
-				testCase.expected,
-				output,
-			)
-		}
+				output := PathShorten(
+					tt.input,
+					tt.pathSeparator,
+					tt.pathComponentLength,
+				)
+
+				if output != tt.expected {
+					t.Errorf(
+						"Input %#v: expected %#v, got %#v",
+						tt.input,
+						tt.expected,
+						output,
+					)
+				}
+			},
+		)
 	}
 }
 
 func TestShortenPathComponent(t *testing.T) {
-	testCases := []ShortenPathComponentTestCase{
+	testCases := []struct {
+		input               string
+		pathComponentLength uint
+		expected            string
+	}{
 		{"", 1, ""},
 		{"", 2, ""},
 		{".", 1, "."},
