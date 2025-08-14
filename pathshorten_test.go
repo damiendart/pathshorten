@@ -5,20 +5,21 @@
 package pathshorten
 
 import (
-	"fmt"
 	"testing"
 )
 
 func TestPathShorten(t *testing.T) {
 	t.Parallel()
 
-	// The following tests are based on Vim's "pathshorten" tests:
-	// <https://github.com/vim/vim/blob/master/src/testdir/test_functions.vim#L520>.
-	testCases := []struct {
+	// The following tests cases are based on manual testing of the
+	// "pathshorten" function in Vim 9.1.1591 and [Vim's unit tests].
+	//
+	// [Vim's unit tests]: https://github.com/vim/vim/blob/v9.1.1591/src/testdir/test_functions.vim#L517
+	tests := []struct {
 		input               string
 		pathSeparator       string
 		pathComponentLength uint
-		expected            string
+		want                string
 	}{
 		{"", "/", 1, ""},
 		{".", "/", 1, "."},
@@ -40,26 +41,49 @@ func TestPathShorten(t *testing.T) {
 		{"~/../bar", "/", 1, "~/../bar"},
 		{"foo:bar", ":", 1, "f:bar"},
 		{`C:\foo\bar`, `\`, 1, `C\f\bar`},
+
+		{"", "/", 2, ""},
+		{".", "/", 2, "."},
+		{"..", "/", 2, ".."},
+		{"~", "/", 2, "~"},
+		{"~~", "/", 2, "~~"},
+		{"foo", "/", 2, "foo"},
+		{"/foo", "/", 2, "/foo"},
+		{"foo/", "/", 2, "fo/"},
+		{"foo/bar", "/", 2, "fo/bar"},
+		{"foo/bar/foobar", "/", 2, "fo/ba/foobar"},
+		{".foo/bar", "/", 2, ".fo/bar"},
+		{"~foo/bar", "/", 2, "~fo/bar"},
+		{"~.foo/bar", "/", 2, "~.fo/bar"},
+		{".~foo/bar", "/", 2, ".~fo/bar"},
+		{"~/foo/bar", "/", 2, "~/fo/bar"},
+		{"~/föo/bar", "/", 2, "~/fö/bar"},
+		{"~/àéïöü/bar", "/", 2, "~/àé/bar"},
+		{"~/../bar", "/", 2, "~/../bar"},
+		{"foo:bar", ":", 2, "fo:bar"},
+		{`C:\foo\bar`, `\`, 2, `C:\fo\bar`},
 	}
 
-	for _, tt := range testCases {
+	for _, test := range tests {
 		t.Run(
-			fmt.Sprintf("shortens %q correctly", tt.input),
+			test.input,
 			func(t *testing.T) {
 				t.Parallel()
 
 				output := PathShorten(
-					tt.input,
-					tt.pathSeparator,
-					tt.pathComponentLength,
+					test.input,
+					test.pathSeparator,
+					test.pathComponentLength,
 				)
 
-				if output != tt.expected {
+				if output != test.want {
 					t.Errorf(
-						"Input %#v: expected %#v, got %#v",
-						tt.input,
-						tt.expected,
+						"PathShorten(%#v, %#v, %d) = %#v, want %#v",
+						test.input,
+						test.pathSeparator,
+						test.pathComponentLength,
 						output,
+						test.want,
 					)
 				}
 			},
@@ -68,10 +92,12 @@ func TestPathShorten(t *testing.T) {
 }
 
 func TestShortenPathComponent(t *testing.T) {
-	testCases := []struct {
+	t.Parallel()
+
+	tests := []struct {
 		input               string
 		pathComponentLength uint
-		expected            string
+		want                string
 	}{
 		{"", 1, ""},
 		{"", 2, ""},
@@ -108,19 +134,24 @@ func TestShortenPathComponent(t *testing.T) {
 		{"~~.foo", 2, "~~.fo"},
 	}
 
-	for _, testCase := range testCases {
-		output := shortenPathComponent(
-			testCase.input,
-			testCase.pathComponentLength,
-		)
+	for _, test := range tests {
+		t.Run(
+			test.input,
+			func(t *testing.T) {
+				t.Parallel()
 
-		if output != testCase.expected {
-			t.Errorf(
-				"Input %#v: expected %#v, got %#v",
-				testCase.input,
-				testCase.expected,
-				output,
-			)
-		}
+				output := shortenPathComponent(test.input, test.pathComponentLength)
+
+				if output != test.want {
+					t.Errorf(
+						"shortenPathComponent(%#v, %d) = %#v, want %#v",
+						test.input,
+						test.pathComponentLength,
+						output,
+						test.want,
+					)
+				}
+			},
+		)
 	}
 }
